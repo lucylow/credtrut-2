@@ -25,7 +25,7 @@ const bonuses = [
 ];
 
 const HackathonSection = () => {
-  const [ref, inView] = useInView({
+  const [inViewRef, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
@@ -64,7 +64,7 @@ const HackathonSection = () => {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="container relative z-10" ref={ref}>
+      <div className="container relative z-10" ref={inViewRef}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
