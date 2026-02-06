@@ -187,6 +187,19 @@ html.theme-transitioning *::after {
 @layer components {
   .glass-card {
     @apply bg-card/50 backdrop-blur-xl border border-border rounded-2xl;
+    box-shadow: 
+      0 4px 24px -4px hsl(var(--primary) / 0.05),
+      0 0 0 1px hsl(var(--border) / 0.5),
+      inset 0 1px 1px hsl(0 0% 100% / 0.03);
+  }
+  
+  .glass-card-elevated {
+    @apply bg-card/60 backdrop-blur-xl border border-border/80 rounded-2xl;
+    box-shadow: 
+      0 8px 32px -8px hsl(var(--primary) / 0.1),
+      0 4px 16px -4px hsl(0 0% 0% / 0.15),
+      0 0 0 1px hsl(var(--border) / 0.5),
+      inset 0 1px 2px hsl(0 0% 100% / 0.05);
   }
   
   .glass-nav {
@@ -201,6 +214,64 @@ html.theme-transitioning *::after {
   .glow-orb {
     @apply absolute rounded-full blur-3xl opacity-30;
     animation: pulse-glow 4s ease-in-out infinite alternate;
+  }
+  
+  /* Interactive card with hover state */
+  .interactive-card {
+    @apply glass-card transition-all duration-300 cursor-pointer;
+  }
+  
+  .interactive-card:hover {
+    @apply border-primary/30;
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px -8px hsl(var(--primary) / 0.15),
+      0 8px 24px -8px hsl(0 0% 0% / 0.2),
+      0 0 0 1px hsl(var(--primary) / 0.2);
+  }
+  
+  /* Status indicators */
+  .status-dot {
+    @apply relative w-2 h-2 rounded-full;
+  }
+  
+  .status-dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full animate-ping opacity-75;
+    background: inherit;
+  }
+  
+  .status-dot-primary { @apply bg-primary; }
+  .status-dot-success { @apply bg-emerald-500; }
+  .status-dot-warning { @apply bg-amber-500; }
+  .status-dot-danger { @apply bg-red-500; }
+  
+  /* Badge styles */
+  .badge-glow {
+    @apply relative;
+    box-shadow: 0 0 12px -2px currentColor;
+  }
+  
+  /* Gradient borders */
+  .gradient-border {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: 1rem;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 }
 
