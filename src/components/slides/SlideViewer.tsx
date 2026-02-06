@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Lock, Globe, Clock, TrendingDown, Layers, Eye, FileCheck } from 'lucide-react';
+import { Shield, Lock, Globe, Clock, TrendingDown, Layers, Eye, FileCheck, LucideIcon } from 'lucide-react';
 import { fetchSlideBySlug } from '@/mocks/api';
 import type { Slide, Bullet } from '@/types/slides.types';
 import { cn } from '@/lib/utils';
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, LucideIcon> = {
   'shield-check': Shield,
   'padlock-open': Lock,
   'globe-verify': Globe,

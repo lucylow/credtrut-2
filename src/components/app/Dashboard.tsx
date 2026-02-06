@@ -52,7 +52,6 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <StatCard
-            key={stat.label}
             label={stat.label}
             value={stat.value}
             change={stat.change}
@@ -73,8 +72,8 @@ export default function Dashboard() {
       >
         <h3 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h3>
         <StaggerContainer staggerDelay={0.1} className="space-y-3">
-          {recentActivity.map((activity, index) => (
-            <StaggerItem key={index}>
+          {recentActivity.map((activity) => (
+            <StaggerItem>
               <motion.div
                 whileHover={{ x: 4 }}
                 className="flex items-center justify-between p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
