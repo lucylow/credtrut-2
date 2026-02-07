@@ -1,5 +1,4 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useSwitchChain, useBalance } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain, useBalance } from "wagmi";
 import { arbitrumSepolia } from "wagmi/chains";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Wallet, Zap, ExternalLink, History, ArrowUpRight, ArrowDownLeft, CheckCircle, Clock, Copy, Check } from "lucide-react";
@@ -27,6 +26,8 @@ const STORAGE_KEY = 'credtrust_tx_history';
 
 export default function WalletConnector() {
   const { isConnected, chain, address } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
   const { data: balance } = useBalance({ address });
   const [copied, setCopied] = useState(false);
@@ -55,6 +56,13 @@ export default function WalletConnector() {
 
   const isWrongNetwork = isConnected && chain?.id !== arbitrumSepolia.id;
 
+  const handleConnect = () => {
+    const connector = connectors[0];
+    if (connector) {
+      connect({ connector });
+    }
+  };
+
   const handleSwitchNetwork = () => {
     switchChain({ chainId: arbitrumSepolia.id });
   };
@@ -71,6 +79,8 @@ export default function WalletConnector() {
     }
   };
 
+  const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
+
   return (
     <div className="flex items-center gap-2">
       {/* Network Badge */}
@@ -78,10 +88,10 @@ export default function WalletConnector() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#28A0F0]/10 border border-[#28A0F0]/30"
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30"
         >
-          <div className="w-2 h-2 rounded-full bg-[#28A0F0] animate-pulse" />
-          <span className="text-xs font-medium text-[#28A0F0]">Arbitrum Sepolia</span>
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-xs font-medium text-primary">Arbitrum Sepolia</span>
         </motion.div>
       )}
 
@@ -100,9 +110,9 @@ export default function WalletConnector() {
           <DropdownMenuContent align="end" className="w-72 bg-card border-border z-50">
             <DropdownMenuLabel className="flex items-center justify-between">
               <span>Recent Activity</span>
-              <a 
-                href={`https://sepolia.arbiscan.io/address/${address}`} 
-                target="_blank" 
+              <a
+                href={`https://sepolia.arbiscan.io/address/${address}`}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-primary hover:underline flex items-center gap-1"
               >
@@ -164,71 +174,52 @@ export default function WalletConnector() {
         )}
       </AnimatePresence>
 
-      <ConnectButton.Custom>
-        {({ account, chain, openConnectModal, openAccountModal, openChainModal, mounted }) => {
-          const ready = mounted;
-          const connected = ready && account && chain;
-
-          return (
-            <div {...(!ready && { 'aria-hidden': true, style: { opacity: 0, pointerEvents: 'none' } })}>
-              {!connected ? (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={openConnectModal}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#28A0F0] to-[#1868B7] hover:from-[#3CB0FF] hover:to-[#2878C7] text-white font-medium text-sm transition-all shadow-lg shadow-[#28A0F0]/20"
-                >
-                  <Wallet className="h-4 w-4" />
-                  <span>Connect</span>
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={openAccountModal}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card/80 backdrop-blur border border-border hover:border-[#28A0F0]/50 transition-all"
-                >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#28A0F0] to-[#9945FF] flex items-center justify-center">
-                    <Zap className="h-3 w-3 text-white" />
-                  </div>
-                  <div className="text-left hidden sm:block">
-                    <p className="text-xs font-medium text-foreground">
-                      {account.displayName}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {account.displayBalance || '0 ETH'}
-                    </p>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <ExternalLink className="h-3 w-3 text-muted-foreground ml-1 hover:text-primary transition-colors cursor-pointer" />
-                      </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={copyAddress} className="gap-2">
-                        {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
-                        <span>{copied ? "Copied!" : "Copy Address"}</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={openAccountModal} className="gap-2">
-                        <Wallet className="h-4 w-4" />
-                        <span>Account Details</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        className="gap-2 text-destructive focus:text-destructive"
-                        onClick={() => openAccountModal()}
-                      >
-                        Disconnect
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </motion.button>
-              )}
-            </div>
-          );
-        }}
-      </ConnectButton.Custom>
+      {/* Connect / Account Button */}
+      {!isConnected ? (
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleConnect}
+          disabled={isPending}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-medium text-sm transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+        >
+          <Wallet className="h-4 w-4" />
+          <span>{isPending ? 'Connecting...' : 'Connect'}</span>
+        </motion.button>
+      ) : (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card/80 backdrop-blur border border-border hover:border-primary/50 transition-all"
+            >
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Zap className="h-3 w-3 text-primary-foreground" />
+              </div>
+              <div className="text-left hidden sm:block">
+                <p className="text-xs font-medium text-foreground">{shortAddress}</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {balance ? `${(Number(balance.value) / 10 ** balance.decimals).toFixed(4)} ${balance.symbol}` : '0 ETH'}
+                </p>
+              </div>
+            </motion.button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={copyAddress} className="gap-2">
+              {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+              <span>{copied ? "Copied!" : "Copy Address"}</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="gap-2 text-destructive focus:text-destructive"
+              onClick={() => disconnect()}
+            >
+              Disconnect
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 }
