@@ -1,6 +1,6 @@
 // Analytics Service - Mock implementation for demo
 
-import { CreditAnalytics, PortfolioStats, ScoreHistoryPoint, RiskDistribution, LoanPerformancePoint, CreditFactor } from '@/types/analytics.types';
+import { CreditAnalytics, PortfolioStats, ScoreHistoryPoint, RiskDistribution, LoanPerformancePoint, CreditFactor, MarketInsight } from '@/types/analytics.types';
 
 const generateScoreHistory = (timeRange: string): ScoreHistoryPoint[] => {
   const points: ScoreHistoryPoint[] = [];
@@ -94,6 +94,13 @@ const generateCreditFactors = (): CreditFactor[] => [
   },
 ];
 
+const generateMarketInsights = (): MarketInsight[] => [
+  { asset: 'ETH', price: 2850.45, change24h: 2.4, sentiment: 'bullish', volatility: 15.2, volume24h: 12500000000, riskLevel: 'medium' },
+  { asset: 'BTC', price: 68420.12, change24h: 1.1, sentiment: 'bullish', volatility: 12.5, volume24h: 35000000000, riskLevel: 'low' },
+  { asset: 'USDC', price: 1.00, change24h: 0.01, sentiment: 'neutral', volatility: 0.1, volume24h: 5000000000, riskLevel: 'low' },
+  { asset: 'LINK', price: 18.25, change24h: -3.2, sentiment: 'bearish', volatility: 22.8, volume24h: 850000000, riskLevel: 'high' },
+];
+
 export async function fetchCreditAnalytics(timeRange: string = '30d'): Promise<CreditAnalytics> {
   await new Promise(resolve => setTimeout(resolve, 600));
   
@@ -114,6 +121,9 @@ export async function fetchCreditAnalytics(timeRange: string = '30d'): Promise<C
     },
     factors: generateCreditFactors(),
     defaultProbability: currentScore >= 750 ? 0.5 : currentScore >= 650 ? 2.3 : 8.7,
+    sharpeRatio: 1.85,
+    volatilityScore: 24.5,
+    marketInsights: generateMarketInsights(),
   };
 }
 

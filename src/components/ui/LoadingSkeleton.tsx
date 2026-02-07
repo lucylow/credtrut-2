@@ -1,18 +1,17 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SkeletonProps {
   className?: string;
 }
 
-export function Skeleton({ className, ...props }: SkeletonProps) {
+export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
         'animate-pulse rounded-lg bg-muted/50',
         className
       )}
-      {...props}
     />
   );
 }
@@ -87,7 +86,7 @@ export default function LoadingSkeleton({
     return (
       <div className={cn('flex items-center gap-3', className)}>
         {skeletons.map((_, i) => (
-          <div key={i} className="h-10 w-10 rounded-full animate-pulse bg-muted/50" />
+          <Skeleton key={i} className="h-10 w-10 rounded-full" />
         ))}
       </div>
     );

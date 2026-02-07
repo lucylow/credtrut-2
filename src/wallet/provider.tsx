@@ -4,13 +4,9 @@ import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { arbitrumSepolia } from "wagmi/chains";
 
-// WalletConnect Project ID - Get your free ID at https://cloud.walletconnect.com
-// This is a publishable key, safe to include in client code
-const WALLETCONNECT_PROJECT_ID = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "3a8170812b534d0ff9d794f19a901d64";
-
 export const config = getDefaultConfig({
   appName: "CredTrust",
-  projectId: WALLETCONNECT_PROJECT_ID,
+  projectId: "6c93b3f66904f447f5264b971f4a4962", // Default public demo ID or should be replaced with env
   chains: [arbitrumSepolia],
   ssr: false,
 });

@@ -19,6 +19,11 @@ const collateralTypes = [
   { value: 'none', label: 'Unsecured', icon: '🛡️' },
 ];
 
+const regions = [
+  { value: 'africa', label: 'Africa', icon: '🌍' },
+  { value: 'global', label: 'Global', icon: '🌐' },
+];
+
 export default function LoanFilters({ filters, onFilterChange }: LoanFiltersProps) {
   const toggleRiskTier = (tier: string) => {
     const newTiers = filters.riskTiers.includes(tier)
@@ -32,6 +37,14 @@ export default function LoanFilters({ filters, onFilterChange }: LoanFiltersProp
       ? filters.collateralTypes.filter(t => t !== type)
       : [...filters.collateralTypes, type];
     onFilterChange({ ...filters, collateralTypes: newTypes });
+  };
+
+  const toggleRegion = (region: string) => {
+    const currentRegions = filters.regions || [];
+    const newRegions = currentRegions.includes(region)
+      ? currentRegions.filter(r => r !== region)
+      : [...currentRegions, region];
+    onFilterChange({ ...filters, regions: newRegions });
   };
 
   return (
@@ -104,6 +117,27 @@ export default function LoanFilters({ filters, onFilterChange }: LoanFiltersProp
             >
               <span className={`w-2 h-2 rounded-full ${tier.color}`} />
               {tier.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Regions */}
+      <div>
+        <span className="text-sm font-medium text-foreground block mb-3">Region</span>
+        <div className="flex flex-wrap gap-2">
+          {regions.map((region) => (
+            <button
+              key={region.value}
+              onClick={() => toggleRegion(region.value)}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                (filters.regions || []).includes(region.value)
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              <span>{region.icon}</span>
+              {region.label}
             </button>
           ))}
         </div>

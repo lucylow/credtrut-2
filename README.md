@@ -1,108 +1,84 @@
-# CredTrust: Privacy-Preserving Credit Marketplace
+# 🚀 CredTrust: Multi-Agent AI DeFi & Privacy Protocol
 
-> Built with [Lovable](https://lovable.dev) for the **Hack4Privacy** hackathon
+CredTrust is a next-generation decentralized finance (DeFi) dashboard powered by autonomous AI agents. Built with a focus on privacy and verifiable credit scoring, it leverages Eliza OS for agent orchestration, Web3 messaging for secure communications, and TEE (Trusted Execution Environment) for privacy-preserving computations.
 
-CredTrust is a high-fidelity, privacy-preserving credit marketplace protocol that combines **iExec Trusted Execution Environments (TEE)**, **Zero-Knowledge Proofs (ZKP)**, and **Risk-Tranching Smart Contracts** to enable institutional-grade credit underwriting on **Arbitrum Sepolia** while maintaining absolute borrower data sovereignty.
+## 🌟 Key Features
 
-## 🚀 Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Visit [http://localhost:8080](http://localhost:8080) to view the app.
+- **🤖 Multi-Agent AI Dashboard**: Deploy and interact with specialized Eliza OS agents for credit scoring, risk analysis, and disclosure management.
+- **📊 Verifiable Credit Scoring**: Privacy-focused credit assessment using on-chain and off-chain data.
+- **💬 Web3 Messaging & Notifications**: Integrated XMTP and Push Protocol for secure agent-to-user and agent-to-agent communication.
+- **📱 Telegram Mini App Support**: Full support for Telegram's mobile-first interface, including inline agent chat and wallet connectivity.
+- **🛡️ Privacy-First Architecture**: Utilizes TEE jobs and glassmorphism UI for a secure and modern user experience.
+- **🎨 AI-Generated Visualizations**: Dynamic privacy and data visualizations powered by Stable Diffusion.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS
-- **UI Components**: shadcn/ui, Radix UI, Framer Motion
-- **Web3**: wagmi, viem, RainbowKit
-- **Charts**: Recharts
-- **State**: Zustand, TanStack Query
+- **Frontend**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) + [Framer Motion](https://www.framer.com/motion/)
+- **Agent Framework**: [Eliza OS](https://elizaos.github.io/eliza/)
+- **Web3/Blockchain**: [Wagmi](https://wagmi.sh/) + [Viem](https://viem.sh/) + [RainbowKit](https://www.rainbowkit.com/)
+- **Messaging**: [XMTP](https://xmpt.org/) + [Push Protocol](https://push.org/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Deployment**: [Lovable](https://lovable.dev)
 
 ## 📁 Project Structure
 
-```
-├── src/
-│   ├── components/     # React components
-│   │   ├── ui/         # shadcn/ui components
-│   │   ├── landing/    # Landing page sections
-│   │   └── ...         # Feature components
-│   ├── hooks/          # Custom React hooks
-│   ├── lib/            # Utility functions
-│   ├── pages/          # Page components
-│   ├── wallet/         # Web3 wallet provider
-│   └── types/          # TypeScript types
-├── contracts/          # Solidity smart contracts
-├── scripts/            # Deployment scripts
-└── public/             # Static assets
-```
-
-## 🔐 How CredTrust Works
-
-1. **Ingestion**: Borrowers encrypt data client-side using iExec Data Protector
-2. **Processing**: An iExec SGX Enclave computes the credit score in isolation
-3. **Verification**: The TEE generates a Groth16 ZK Proof for risk tier verification
-4. **Settlement**: On-chain verifiers validate the ZKP and mint a Soulbound NFT credential
-
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    subgraph "Borrower Domain"
-        Data[Raw Credit Data] -->|Encrypt| iExecDP[iExec Data Protector]
-    end
-
-    subgraph "Privacy Layer (TEE)"
-        iExecDP -->|Encrypted Blob| SGX[iExec SGX Enclave]
-        SGX -->|Compute| Score[Credit Score]
-        Score -->|Generate| ZKP[Groth16 ZK Proof]
-    end
-
-    subgraph "Consensus Layer (Arbitrum)"
-        ZKP -->|Verify| ZKVer[ZKVerifier.sol]
-        ZKVer -->|Mint| SBNFT[CreditProofNFT.sol]
-        SBNFT -->|Authorize| Market[CredTrustMarketplace.sol]
-    end
+```text
+src/
+├── agents/             # Eliza OS agent definitions and logic
+├── components/         # Reusable UI components (Atomic design)
+│   ├── agents/         # Agent-specific UI elements
+│   ├── chat/           # Telegram & XMTP chat interfaces
+│   └── ui/             # shadcn/ui base components
+├── hooks/              # Custom React hooks (use-eliza, use-xmtp, etc.)
+├── lib/                # SDK wrappers and core utilities
+├── pages/              # Application routes and main views
+├── providers/          # React context providers (Web3, Agents, etc.)
+├── store/              # Global state management with Zustand
+└── contracts/          # Smart contract ABIs and interactions
 ```
 
-## 💰 Risk Tranching
+## 🚀 Getting Started
 
-| Tier | Score Range | Interest Rate | Max LTV |
-|------|-------------|---------------|---------|
-| **A** | 750+ | 4.5% | 85% |
-| **B** | 700-749 | 8.0% | 70% |
-| **C** | 650-699 | 12.5% | 50% |
-| **D** | <650 | 22.0% | 30% |
+### Prerequisites
 
-## 🔧 Environment Variables
+- [Node.js](https://nodejs.org/) (v18+)
+- [Bun](https://bun.sh/) (Recommended) or [npm](https://www.npmjs.com/)
 
-Create a `.env` file for local development:
+### Installation
 
-```env
-VITE_WALLETCONNECT_PROJECT_ID=your_project_id
-VITE_BACKEND_URL=http://localhost:4000
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   bun install
+   # or
+   npm install
+   ```
+
+### Development
+
+Start the development server:
+```bash
+npm run dev
 ```
+The application will be available at `http://localhost:8080`.
 
-## 📦 Deployment
+## 📦 Building & Preview
 
-### Lovable (Recommended)
-Simply click **Share → Publish** in the Lovable editor.
-
-### Manual Deployment
+Build the production-ready application:
 ```bash
 npm run build
-# Deploy the dist/ folder to your hosting provider
 ```
 
-## 🤝 Contributing
+Preview the production build locally:
+```bash
+npm run preview
+```
 
-This project uses Lovable's bidirectional GitHub sync. Changes made in Lovable automatically push to GitHub, and vice versa.
+## 🌍 Deployment
 
-## 📄 License
+CredTrust is designed to be easily deployed via **Lovable**, **Vercel**, or **Netlify**. Ensure your environment variables are configured correctly for WalletConnect and any backend services.
 
-© 2026 CredTrust Protocol. Built for Hack4Privacy.
+---
+
+*Built with ❤️ during Hack4Privacy*

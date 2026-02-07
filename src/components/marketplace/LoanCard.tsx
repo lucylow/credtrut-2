@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, Clock, Shield, Users, DollarSign, Percent } from 'lucide-react';
+import { TrendingUp, Clock, Shield, Users, DollarSign, Percent, Globe, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Loan } from '@/types/loan.types';
@@ -26,6 +26,12 @@ export default function LoanCard({ loan, onApply }: LoanCardProps) {
     C: 'bg-destructive/10 border-destructive/30 text-destructive',
   };
 
+  const impactColors = {
+    A: 'text-success',
+    B: 'text-primary',
+    C: 'text-amber-500',
+  };
+
   const collateralLabels = {
     crypto: '₿ Crypto',
     nft: '🖼️ NFT',
@@ -47,8 +53,13 @@ export default function LoanCard({ loan, onApply }: LoanCardProps) {
             <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${riskBgColors[loan.riskTier]}`}>
               Tier {loan.riskTier}
             </span>
-            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-              {collateralLabels[loan.collateralType]}
+            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground flex items-center gap-1">
+              <Globe className="w-3 h-3" />
+              {loan.borrower.includes(':') ? loan.borrower.split(':')[0].toUpperCase() : 'WEB3'}
+            </span>
+            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
+              <Leaf className="w-3 h-3" />
+              Impact: {loan.riskTier === 'A' ? 'High' : loan.riskTier === 'B' ? 'Medium' : 'Stable'}
             </span>
           </div>
           <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">

@@ -2,16 +2,15 @@
 
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api, type ApiResponse } from '@/lib/api';
+import { teeApi, trancheApi } from '@/lib/api';
 
 // Health check hook
 export function useHealthCheck() {
   return useQuery({
     queryKey: ['health'],
     queryFn: async () => {
-      const response = await api.checkHealth();
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      const response = await teeApi.getStatus();
+      return response;
     },
     retry: 1,
     staleTime: 30000,
@@ -23,25 +22,11 @@ export function useTranchePrices(pollInterval = 5000) {
   return useQuery({
     queryKey: ['tranche-prices'],
     queryFn: async () => {
-      const response = await api.getTranchePrices();
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      const response = await trancheApi.getPrices();
+      return response;
     },
     refetchInterval: pollInterval,
     staleTime: pollInterval / 2,
-  });
-}
-
-// HSM status hook
-export function useHSMStatus() {
-  return useQuery({
-    queryKey: ['hsm-status'],
-    queryFn: async () => {
-      const response = await api.getHSMStatus();
-      if (!response.success) throw new Error(response.error);
-      return response.data;
-    },
-    staleTime: 60000,
   });
 }
 
@@ -50,12 +35,11 @@ export function useProtectData() {
   const [progress, setProgress] = useState(0);
   
   const mutation = useMutation({
-    mutationFn: async ({ data, wallet }: { data: object; wallet: string }) => {
+    mutationFn: async ({ data, wallet }: { data: any; wallet: string }) => {
       setProgress(10);
-      const response = await api.protectData(data, wallet);
+      const response = await teeApi.protectData(data, wallet);
       setProgress(100);
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      return response;
     },
     onError: () => setProgress(0),
   });
@@ -68,7 +52,7 @@ export function useProtectData() {
   };
 }
 
-// TEE job execution mutation with polling
+// TEE job execution mutation
 export function useRunTEEJob() {
   const [jobProgress, setJobProgress] = useState(0);
   const [jobStatus, setJobStatus] = useState<string>('idle');
@@ -77,38 +61,10 @@ export function useRunTEEJob() {
     mutationFn: async (ipfsHash: string) => {
       setJobStatus('submitting');
       setJobProgress(5);
-      
-      // Submit job
-      const submitResponse = await api.runTEEJob(ipfsHash);
-      if (!submitResponse.success) throw new Error(submitResponse.error);
-      
-      const { taskId } = submitResponse.data!;
-      setJobStatus('processing');
-      setJobProgress(10);
-      
-      // Poll for completion
-      const maxAttempts = 60;
-      for (let i = 0; i < maxAttempts; i++) {
-        await new Promise(r => setTimeout(r, 1000));
-        
-        const statusResponse = await api.getTEEJobStatus(taskId);
-        if (!statusResponse.success) continue;
-        
-        const { status, progress, result } = statusResponse.data!;
-        setJobProgress(Math.max(10, progress));
-        setJobStatus(status);
-        
-        if (status === 'COMPLETED' && result) {
-          setJobProgress(100);
-          return result;
-        }
-        
-        if (status === 'FAILED') {
-          throw new Error('TEE job failed');
-        }
-      }
-      
-      throw new Error('TEE job timed out');
+      const response = await teeApi.runTeeJob(ipfsHash);
+      setJobStatus('completed');
+      setJobProgress(100);
+      return response;
     },
     onError: () => {
       setJobStatus('error');
@@ -131,31 +87,6 @@ export function useRunTEEJob() {
   };
 }
 
-// Mint tranche position mutation
-export function useMintPosition() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      tranche,
-      amount,
-      wallet,
-    }: {
-      tranche: 'senior' | 'junior' | 'equity';
-      amount: number;
-      wallet: string;
-    }) => {
-      const response = await api.mintTranchePosition(tranche, amount, wallet);
-      if (!response.success) throw new Error(response.error);
-      return response.data;
-    },
-    onSuccess: () => {
-      // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ['tranche-prices'] });
-    },
-  });
-}
-
 // Generic API hook for custom endpoints
 export function useApiRequest<T>() {
   const [data, setData] = useState<T | null>(null);
@@ -163,20 +94,15 @@ export function useApiRequest<T>() {
   const [isLoading, setIsLoading] = useState(false);
 
   const execute = useCallback(async (
-    requestFn: () => Promise<ApiResponse<T>>
+    requestFn: () => Promise<T>
   ): Promise<T | null> => {
     setIsLoading(true);
     setError(null);
     
     try {
-      const response = await requestFn();
-      if (response.success && response.data) {
-        setData(response.data);
-        return response.data;
-      } else {
-        setError(response.error || 'Request failed');
-        return null;
-      }
+      const result = await requestFn();
+      setData(result);
+      return result;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);

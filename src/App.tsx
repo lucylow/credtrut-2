@@ -5,19 +5,27 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AppPage from "./pages/App";
 import NotFound from "./pages/NotFound";
+import AgentMarketplace from "./pages/AgentMarketplace";
+import { ElizaProvider } from "./providers/eliza-provider";
+import { TelegramProvider } from "./providers/telegram-provider";
 
 const App = () => (
   <TooltipProvider>
-    <Toaster />
-    <Sonner />
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/app/*" element={<AppPage />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <ElizaProvider>
+      <TelegramProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/marketplace" element={<AgentMarketplace />} />
+            <Route path="/app/*" element={<AppPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TelegramProvider>
+    </ElizaProvider>
   </TooltipProvider>
 );
 

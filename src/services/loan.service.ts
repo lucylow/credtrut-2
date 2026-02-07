@@ -21,14 +21,14 @@ const borrowerToLoan = (borrower: BorrowerProfile, index: number): Loan => {
   const title = titles[index % titles.length];
   
   const descriptions: Record<string, string> = {
-    mobile_money_agent: 'Expanding mobile money services to underserved communities',
-    agritech_farmer: 'Agricultural investment for sustainable farming practices',
-    remittance_receiver: 'Family-backed investment in local business opportunity',
-    fintech_employee: 'Technology-enabled financial service innovation',
-    software_engineer: 'Digital product development and scaling',
-    teacher: 'Educational technology and content development',
-    nurse: 'Healthcare service improvement initiative',
-    freelancer: 'Independent business growth and client expansion',
+    mobile_money_agent: 'Expanding mobile money services to underserved communities in rural areas, increasing local financial liquidity.',
+    agritech_farmer: 'Financing for high-yield seeds and sustainable irrigation to improve food security and smallholder farmer livelihoods.',
+    remittance_receiver: 'Family-backed investment to establish a local community business, reducing dependence on external aid.',
+    fintech_employee: 'Early-stage funding for technology-enabled financial services focused on domestic payment inclusion.',
+    software_engineer: 'Scaling a digital platform that provides remote job opportunities for local developers.',
+    teacher: 'Developing digital educational content and establishing a neighborhood tutoring hub.',
+    nurse: 'Procuring essential medical supplies and diagnostic equipment for a community health center.',
+    freelancer: 'Working capital for a growing independent creative agency servicing global clients.',
   };
 
   // Calculate loan amount based on income and risk tier

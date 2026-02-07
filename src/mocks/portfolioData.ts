@@ -116,6 +116,65 @@ export const MOCK_PORTFOLIOS: Portfolio[] = [
     ],
     credit_proof_ids: [1004, 1005, 1006, 1007],
     mrenclave: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+  },
+  {
+    portfolio_id: "port-004",
+    owner_address: "0x1234567890123456789012345678901234567890",
+    total_value_usd: 500000,
+    collateral_composition: {
+      stablecoins: 300000,
+      bluechip_eth: 150000,
+      rwa_tokens: 50000
+    },
+    loan_to_value_target: 0.55,
+    duration_months: 36,
+    tranches: [
+      {
+        seniority: "senior",
+        size_usd: 350000,
+        coupon_rate: "1.8%",
+        risk_score: 0.97,
+        nft_token_id: 4001
+      },
+      {
+        seniority: "equity",
+        size_usd: 150000,
+        coupon_rate: "25.0%",
+        risk_score: 0.35,
+        nft_token_id: 4002
+      }
+    ],
+    use_case_category: "Institutional",
+    impact_score: 65
+  },
+  {
+    portfolio_id: "port-005",
+    owner_address: "0x5555555555555555555555555555555555555555",
+    total_value_usd: 25000,
+    collateral_composition: {
+      stablecoins: 20000,
+      african_tokens: 5000
+    },
+    loan_to_value_target: 0.80,
+    duration_months: 3,
+    tranches: [
+      {
+        seniority: "senior",
+        size_usd: 15000,
+        coupon_rate: "4.5%",
+        risk_score: 0.85,
+        nft_token_id: 5001
+      },
+      {
+        seniority: "junior",
+        size_usd: 10000,
+        coupon_rate: "12.0%",
+        risk_score: 0.60,
+        nft_token_id: 5002
+      }
+    ],
+    use_case_category: "Micro-Agri",
+    impact_score: 98
   }
 ];
 

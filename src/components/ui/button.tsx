@@ -18,6 +18,9 @@ const buttonVariants = cva(
         hero: "relative overflow-hidden gradient-primary text-primary-foreground hover:-translate-y-1 shadow-lg hover:shadow-xl hover:shadow-primary/25 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700",
         heroOutline: "border-2 border-primary/30 bg-card/80 backdrop-blur-sm text-foreground hover:border-primary hover:bg-primary/10 hover:-translate-y-0.5 shadow-sm hover:shadow-md",
         glow: "bg-primary text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:shadow-[0_0_30px_hsl(var(--primary)/0.6)] hover:-translate-y-0.5",
+        credtrust: "bg-gradient-to-r from-primary to-success text-primary-foreground hover:from-primary/90 hover:to-success/90 shadow-lg shadow-primary/25 hover:-translate-y-0.5",
+        glass: "bg-card/80 backdrop-blur-xl border border-border/50 hover:bg-card/90 text-foreground",
+        success: "bg-success text-success-foreground hover:bg-success/90 shadow-md hover:shadow-lg",
       },
       size: {
         default: "h-10 px-4 py-2",

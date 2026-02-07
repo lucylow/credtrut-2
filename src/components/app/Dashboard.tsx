@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, Shield, Zap, ArrowRight, Activity, Clock, CheckCircle2 } from 'lucide-react';
+import { TrendingUp, Users, Shield, Zap, ArrowRight, Bot } from 'lucide-react';
 import StatCard from '@/components/ui/StatCard';
 import { StaggerContainer, StaggerItem } from '@/components/layout/PageTransition';
-import { getRecentActivity } from '@/mocks/analyticsData';
+import { AIAgentChat } from './AIAgentChat';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 const stats = [
@@ -40,39 +41,18 @@ const stats = [
   },
 ];
 
-const quickActions = [
-  { label: 'Submit Application', icon: TrendingUp, href: '/app/submit', color: 'primary' },
-  { label: 'Browse Marketplace', icon: Users, href: '/app/marketplace', color: 'secondary' },
-  { label: 'View Analytics', icon: Activity, href: '/app/analytics', color: 'emerald' },
+const recentActivity = [
+  { type: 'application', message: 'New credit application submitted', time: '2 min ago' },
+  { type: 'validation', message: 'TEE validation completed', time: '5 min ago' },
+  { type: 'nft', message: 'Credit NFT minted', time: '8 min ago' },
+  { type: 'loan', message: 'Loan funded successfully', time: '12 min ago' },
 ];
 
-const activityIcons = {
-  application: TrendingUp,
-  validation: Shield,
-  nft: CheckCircle2,
-  loan: Activity,
-  repayment: Clock,
-};
-
-const activityColors = {
-  application: 'bg-primary text-primary-foreground',
-  validation: 'bg-emerald-500 text-white',
-  nft: 'bg-secondary text-secondary-foreground',
-  loan: 'bg-orange-500 text-white',
-  repayment: 'bg-blue-500 text-white',
-};
-
 export default function Dashboard() {
-  const recentActivity = getRecentActivity(6);
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Stats Grid */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <StatCard
             key={stat.label}
@@ -85,119 +65,132 @@ export default function Dashboard() {
             delay={index * 0.1}
           />
         ))}
-      </motion.div>
-
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {quickActions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <motion.a
-                key={action.label}
-                href={action.href}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  'interactive-card p-4 flex items-center gap-4 group',
-                  'hover:border-primary/40'
-                )}
-              >
-                <div className={cn(
-                  'p-3 rounded-xl bg-gradient-to-br',
-                  action.color === 'primary' && 'from-primary/20 to-primary/5',
-                  action.color === 'secondary' && 'from-secondary/20 to-secondary/5',
-                  action.color === 'emerald' && 'from-emerald-500/20 to-emerald-500/5',
-                )}>
-                  <Icon className={cn(
-                    'h-5 w-5',
-                    action.color === 'primary' && 'text-primary',
-                    action.color === 'secondary' && 'text-secondary',
-                    action.color === 'emerald' && 'text-emerald-500',
-                  )} />
-                </div>
-                <span className="flex-1 font-medium text-foreground">{action.label}</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </motion.a>
-            );
-          })}
-        </div>
-      </motion.div>
+      </div>
 
       {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="glass-card p-6 border-primary/10"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Zap className="w-5 h-5 text-primary" />
+              Recent Activity
+            </h3>
+            <span className="text-xs text-primary font-medium cursor-pointer hover:underline">View All</span>
+          </div>
+          <StaggerContainer staggerDelay={0.1} className="space-y-3">
+            {recentActivity.map((activity, index) => (
+              <StaggerItem key={index}>
+                <motion.div
+                  whileHover={{ x: 4, backgroundColor: "rgba(var(--primary), 0.05)" }}
+                  className="flex items-center justify-between p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-primary/10"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center",
+                      activity.type === 'application' ? 'bg-primary/10 text-primary' :
+                      activity.type === 'validation' ? 'bg-success/10 text-success' :
+                      activity.type === 'nft' ? 'bg-secondary/10 text-secondary' :
+                      'bg-orange-500/10 text-orange-500'
+                    )}>
+                      {activity.type === 'application' && <Users className="w-4 h-4" />}
+                      {activity.type === 'validation' && <Shield className="w-4 h-4" />}
+                      {activity.type === 'nft' && <Zap className="w-4 h-4" />}
+                      {activity.type === 'loan' && <TrendingUp className="w-4 h-4" />}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">{activity.message}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase">{activity.type}</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-muted-foreground font-mono">{activity.time}</span>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45 }}
+          className="glass-card p-6 border-secondary/10 overflow-hidden relative"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+            <Bot className="w-32 h-32 text-secondary rotate-12" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Bot className="w-5 h-5 text-secondary" />
+            AI Agent Strategy
+          </h3>
+          <p className="text-sm text-muted-foreground mb-6 relative z-10">
+            Our Eliza OS agents are currently optimizing your credit profile and monitoring marketplace liquidity.
+          </p>
+          <div className="space-y-4 relative z-10">
+            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-colors cursor-pointer group">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="font-medium text-primary text-sm">Risk Analyst Agent</h4>
+                <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">Active</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">Analyzing TEE-protected credit data. Current focus: Kenyan SME sector risk assessment.</p>
+              <div className="mt-3 flex items-center gap-2 text-[10px] font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>View Insights</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-secondary/5 border border-secondary/10 hover:bg-secondary/10 transition-colors cursor-pointer group">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="font-medium text-secondary text-sm">Market Bot Agent</h4>
+                <Badge variant="outline" className="text-[10px] bg-secondary/10 text-secondary border-secondary/20">Active</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">Monitoring debt marketplace. Predicts 2.4% liquidity increase in Tranche A next 48h.</p>
+              <div className="mt-3 flex items-center gap-2 text-[10px] font-medium text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>View Predictions</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* AI Agent Chat Integration */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="glass-card-elevated p-6"
+        className="glass-card overflow-hidden"
       >
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
-            <p className="text-sm text-muted-foreground">Latest transactions and updates</p>
+        <div className="grid grid-cols-1 lg:grid-cols-12">
+          <div className="lg:col-span-4 p-8 flex flex-col justify-center bg-muted/30 border-r border-border">
+            <Badge className="w-fit mb-4" variant="secondary">Powered by Eliza OS</Badge>
+            <h3 className="text-2xl font-bold text-foreground mb-4 leading-tight">Interactive AI Intelligence</h3>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Experience the future of DeFi with agents that understand your data without ever seeing it. 
+              Ask about market trends, your credit score, or specialized SME lending pools.
+            </p>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="w-5 h-5 rounded-full bg-success/20 flex items-center justify-center">
+                  <Shield className="w-3 h-3 text-success" />
+                </div>
+                Privacy-Preserving via iExec TEE
+              </div>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                  <TrendingUp className="w-3 h-3 text-primary" />
+                </div>
+                Real-time Market Analytics
+              </div>
+            </div>
           </div>
-          <motion.a
-            href="/app/analytics"
-            whileHover={{ x: 4 }}
-            className="text-sm text-primary hover:text-primary/80 flex items-center gap-1"
-          >
-            View all <ArrowRight className="h-3 w-3" />
-          </motion.a>
+          <div className="lg:col-span-8 p-6 bg-background/50">
+            <AIAgentChat />
+          </div>
         </div>
-        
-        <StaggerContainer staggerDelay={0.08} className="space-y-2">
-          {recentActivity.map((activity) => {
-            const Icon = activityIcons[activity.type] || Activity;
-            const colorClass = activityColors[activity.type] || 'bg-muted text-muted-foreground';
-            
-            return (
-              <StaggerItem key={activity.id}>
-                <motion.div
-                  whileHover={{ x: 4, backgroundColor: 'hsl(var(--muted) / 0.5)' }}
-                  className="flex items-center gap-4 p-3 rounded-xl transition-colors cursor-pointer group"
-                >
-                  <div className={cn('p-2 rounded-lg', colorClass)}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {activity.message}
-                    </p>
-                    {activity.metadata?.amount && (
-                      <p className="text-xs text-muted-foreground">
-                        ${activity.metadata.amount.toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
-                    {activity.metadata?.tier && (
-                      <span className={cn(
-                        'inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full',
-                        activity.metadata.tier === 'A' && 'bg-emerald-500/20 text-emerald-400',
-                        activity.metadata.tier === 'B' && 'bg-blue-500/20 text-blue-400',
-                        activity.metadata.tier === 'C' && 'bg-amber-500/20 text-amber-400',
-                        activity.metadata.tier === 'D' && 'bg-red-500/20 text-red-400',
-                      )}>
-                        Tier {activity.metadata.tier}
-                      </span>
-                    )}
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
       </motion.div>
     </div>
   );

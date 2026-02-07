@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, TrendingUp, DollarSign, Users, Percent, RefreshCw, X } from 'lucide-react';
+import { Search, Filter, TrendingUp, DollarSign, Users, Percent, RefreshCw, X, Bot, ShieldCheck, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import LoanCard from './LoanCard';
 import LoanFilters from './LoanFilters';
 import LoanApplication from './LoanApplication';
 import { Loan, LoanFilter, LoanStats } from '@/types/loan.types';
 import { fetchLoans, fetchLoanStats } from '@/services/loan.service';
-
 export default function LoanMarketplace() {
   const [loans, setLoans] = useState<Loan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +67,11 @@ export default function LoanMarketplace() {
       if (loan.termMonths < filters.minTerm || loan.termMonths > filters.maxTerm) return false;
       if (!filters.riskTiers.includes(loan.riskTier)) return false;
       if (!filters.collateralTypes.includes(loan.collateralType)) return false;
+      if (filters.regions && filters.regions.length > 0) {
+        const isAfrican = loan.borrower.includes(':'); // m-pesa, mtn_momo, airtel_money
+        const region = isAfrican ? 'africa' : 'global';
+        if (!filters.regions.includes(region)) return false;
+      }
       if (filters.status && loan.status !== filters.status) return false;
       return true;
     });
@@ -89,6 +95,83 @@ export default function LoanMarketplace() {
 
   return (
     <div className="space-y-6">
+      {/* AI Onboarding Banner */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-background to-secondary/10 border border-primary/20 shadow-lg relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+          <Bot className="w-24 h-24 text-primary" />
+        </div>
+        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30">
+            <ShieldCheck className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-2 text-center md:text-left">
+            <h3 className="text-xl font-bold text-foreground">Unlock Better Rates with TEE Proofs</h3>
+            <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+              Your confidential credit score allows lenders to offer undercollateralized loans without seeing your raw data. 
+              The <span className="text-primary font-medium">Risk Analyst Agent</span> has verified your proof of solvency.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-2 justify-center md:justify-start">
+              <div className="flex items-center gap-2 text-xs font-medium text-success">
+                <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                TEE Verified Profile
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                Selective Disclosure Active
+              </div>
+            </div>
+          </div>
+          <div className="ml-auto flex gap-3 shrink-0">
+             <Button variant="default" className="shadow-lg shadow-primary/20">Boost Score</Button>
+             <Button variant="outline" onClick={() => (window.location.href = '/app/chat')}>Ask Agent</Button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="glass-card p-4 flex items-center gap-4 border-primary/10">
+          <div className="p-3 rounded-xl bg-primary/10 text-primary">
+            <DollarSign className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Volume</p>
+            <p className="text-xl font-bold text-foreground">${stats?.totalVolume.toLocaleString() || '---'}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-4 border-secondary/10">
+          <div className="p-3 rounded-xl bg-secondary/10 text-secondary">
+            <Percent className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Avg. APR</p>
+            <p className="text-xl font-bold text-foreground">{stats?.avgInterest || '---'}%</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-4 border-success/10">
+          <div className="p-3 rounded-xl bg-success/10 text-success">
+            <Users className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Loans</p>
+            <p className="text-xl font-bold text-foreground">{stats?.activeLoans || '---'}</p>
+          </div>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-4 border-primary/10">
+          <div className="p-3 rounded-xl bg-primary/10 text-primary">
+            <TrendingUp className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Liquidity</p>
+            <p className="text-xl font-bold text-foreground">{stats?.totalLenders.toLocaleString() || '---'}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -97,16 +180,44 @@ export default function LoanMarketplace() {
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Credit Marketplace</h1>
-            <p className="text-muted-foreground">
-              Access undercollateralized loans using your confidential credit score
+            <h1 className="text-3xl font-bold text-foreground mb-1">Credit Marketplace</h1>
+            <p className="text-muted-foreground text-sm">
+              Discover and fund verified credit opportunities globally
             </p>
           </div>
-          <Button onClick={loadData} variant="outline" className="gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button onClick={loadData} variant="outline" size="sm" className="gap-2">
+              <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+              Refresh
+            </Button>
+            <Button className="gap-2" size="sm">
+              <Plus className="h-4 w-4" />
+              Create Request
+            </Button>
+          </div>
         </div>
+
+        {/* AI Insights Banner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-4"
+        >
+          <div className="p-3 rounded-xl bg-primary/20">
+            <Bot className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h4 className="text-sm font-semibold text-primary">TDX Agent Insight</h4>
+            <p className="text-xs text-muted-foreground">
+              Market liquidity is optimal. TDX Agents suggest focusing on Senior tranches for stable yield. 
+              <span className="font-medium text-primary ml-1 cursor-pointer hover:underline">View Strategy →</span>
+            </p>
+          </div>
+          <Badge variant="outline" className="bg-background/50 gap-1">
+            <ShieldCheck className="h-3 w-3 text-emerald-500" />
+            ZKP Verified
+          </Badge>
+        </motion.div>
 
         {/* Stats */}
         {stats && (

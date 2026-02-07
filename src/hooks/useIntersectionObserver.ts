@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, RefObject } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface UseIntersectionObserverOptions {
   threshold?: number | number[];
@@ -8,7 +8,7 @@ interface UseIntersectionObserverOptions {
 }
 
 interface UseIntersectionObserverReturn {
-  ref: RefObject<HTMLDivElement>;
+  ref: React.RefObject<HTMLDivElement>;
   isIntersecting: boolean;
   entry?: IntersectionObserverEntry;
 }

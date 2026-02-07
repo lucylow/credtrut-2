@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { Award, Shield, Clock, ExternalLink, Sparkles } from 'lucide-react';
+import { Award, Shield, Clock, ExternalLink, Sparkles, Loader2, Wallet, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useWallet } from '@/hooks/useWallet';
-
+import { useAccount } from 'wagmi';
+import useMintWithProof from '@/hooks/useMintWithProof';
+import { submitTEEJob, waitForJobCompletion } from '@/services/tee.service';
+import { useState } from 'react';
+import { toast } from '@/hooks/use-toast';
+import type { CreditApplicationData } from '@/types/tee.types';
 interface CreditNFTProps {
   score?: number;
   attestation?: string;
@@ -10,7 +14,11 @@ interface CreditNFTProps {
 }
 
 export default function CreditNFT({ score = 750, attestation, tokenId }: CreditNFTProps) {
-  const { wallet } = useWallet();
+  const { address, isConnected } = useAccount();
+  const { mintFromProofResult, isPending, contractAddress } = useMintWithProof();
+  const [isMinting, setIsMinting] = useState(false);
+  const [mintProgress, setMintProgress] = useState('');
+  const [mintedTokenId, setMintedTokenId] = useState<string | null>(tokenId || null);
 
   const getCreditScoreGradient = (creditScore: number) => {
     if (creditScore >= 750) return 'from-emerald-400 via-green-500 to-teal-500';
@@ -24,6 +32,39 @@ export default function CreditNFT({ score = 750, attestation, tokenId }: CreditN
     if (creditScore >= 670) return 'Good';
     if (creditScore >= 580) return 'Fair';
     return 'Poor';
+  };
+
+  const handleMintNFT = async () => {
+    if (!isConnected || !address) {
+      toast({ title: 'Connect Wallet', description: 'Please connect your wallet first', variant: 'destructive' });
+      return;
+    }
+
+    setIsMinting(true);
+    try {
+      // Generate proof via TEE
+      setMintProgress('Submitting to TEE...');
+      const { taskId } = await submitTEEJob({
+        ipfsHash: `Qm${Date.now().toString(16)}`,
+        borrower: address,
+        encryptedKey: ''
+      });
+      
+      const proofResult = await waitForJobCompletion(taskId, (progress, status) => {
+        setMintProgress(`${status} (${progress}%)`);
+      });
+
+      setMintProgress('Submitting to blockchain...');
+      const result = await mintFromProofResult(proofResult, address);
+      
+      setMintedTokenId(`#${result.tokenId.toString()}`);
+      toast({ title: 'NFT Minted!', description: `Token ID: ${result.tokenId}`, variant: 'default' });
+    } catch (error) {
+      toast({ title: 'Mint Failed', description: error instanceof Error ? error.message : 'Unknown error', variant: 'destructive' });
+    } finally {
+      setIsMinting(false);
+      setMintProgress('');
+    }
   };
 
   return (
@@ -43,7 +84,7 @@ export default function CreditNFT({ score = 750, attestation, tokenId }: CreditN
             <p className="text-sm text-muted-foreground">Non-transferable Soulbound Token</p>
           </div>
         </div>
-        {tokenId && (
+        {mintedTokenId && (
           <span className="px-3 py-1 rounded-full bg-success/20 text-success text-sm font-medium border border-success/30">
             Minted
           </span>
@@ -97,13 +138,13 @@ export default function CreditNFT({ score = 750, attestation, tokenId }: CreditN
             <div>
               <p className="text-xs text-muted-foreground">Owner</p>
               <p className="font-mono text-sm text-foreground">
-                {wallet.address ? `${wallet.address.slice(0, 8)}...${wallet.address.slice(-6)}` : '0x...'}
+                {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : '0x...'}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Token ID</p>
               <p className="font-mono text-sm text-foreground">
-                {tokenId || '#---'}
+                {mintedTokenId || '#---'}
               </p>
             </div>
           </div>
@@ -130,6 +171,14 @@ export default function CreditNFT({ score = 750, attestation, tokenId }: CreditN
           </span>
         </div>
 
+        <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border">
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-primary" />
+            <span className="text-sm text-muted-foreground">Network</span>
+          </div>
+          <span className="text-sm font-medium text-foreground">Arbitrum Sepolia</span>
+        </div>
+
         {attestation && (
           <div className="p-3 rounded-xl bg-muted/30 border border-border">
             <p className="text-xs text-muted-foreground mb-1">Attestation Hash</p>
@@ -138,16 +187,60 @@ export default function CreditNFT({ score = 750, attestation, tokenId }: CreditN
         )}
       </div>
 
+      {/* Mint Progress */}
+      {mintProgress && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="mt-4 p-3 rounded-xl bg-primary/10 border border-primary/30"
+        >
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 text-primary animate-spin" />
+            <span className="text-sm text-primary font-medium">{mintProgress}</span>
+          </div>
+        </motion.div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-3 mt-6">
-        <Button variant="outline" className="flex-1 gap-2">
-          <ExternalLink className="h-4 w-4" />
-          View on Explorer
-        </Button>
-        <Button variant="hero" className="flex-1 gap-2">
-          <Award className="h-4 w-4" />
-          Share Proof
-        </Button>
+        {mintedTokenId ? (
+          <>
+            <Button variant="outline" className="flex-1 gap-2" asChild>
+              <a href={`https://sepolia.arbiscan.io/address/${contractAddress}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4" />
+                View on Explorer
+              </a>
+            </Button>
+            <Button variant="hero" className="flex-1 gap-2">
+              <Award className="h-4 w-4" />
+              Share Proof
+            </Button>
+          </>
+        ) : (
+          <Button 
+            variant="hero" 
+            className="w-full gap-2" 
+            onClick={handleMintNFT}
+            disabled={isMinting || isPending || !isConnected}
+          >
+            {isMinting || isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Minting...
+              </>
+            ) : !isConnected ? (
+              <>
+                <Wallet className="h-4 w-4" />
+                Connect Wallet to Mint
+              </>
+            ) : (
+              <>
+                <Zap className="h-4 w-4" />
+                Mint Credit Proof NFT
+              </>
+            )}
+          </Button>
+        )}
       </div>
     </motion.div>
   );

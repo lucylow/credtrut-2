@@ -1,5 +1,15 @@
 // Credit Analytics Type Definitions
 
+export interface MarketInsight {
+  asset: string;
+  price: number;
+  change24h: number;
+  sentiment: 'bullish' | 'bearish' | 'neutral';
+  volatility: number;
+  volume24h: number;
+  riskLevel: 'low' | 'medium' | 'high';
+}
+
 export interface CreditAnalytics {
   currentScore: number;
   previousScore: number;
@@ -9,6 +19,9 @@ export interface CreditAnalytics {
   peerComparison: PeerComparison;
   factors: CreditFactor[];
   defaultProbability: number;
+  sharpeRatio?: number;
+  volatilityScore?: number;
+  marketInsights?: MarketInsight[];
 }
 
 export interface ScoreHistoryPoint {

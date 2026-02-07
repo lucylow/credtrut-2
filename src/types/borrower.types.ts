@@ -2,17 +2,21 @@
 
 export type RiskTier = 'A' | 'B' | 'C' | 'D';
 export type KycLevel = 'basic' | 'intermediate' | 'full';
-export type Region = 'africa' | 'global';
-export type WalletProvider = 'm-pesa' | 'mtn_momo' | 'airtel_money' | 'metamask' | 'coinbase' | 'trust_wallet';
+export type Region = 'africa' | 'latam' | 'global';
+export type WalletProvider = 'm-pesa' | 'mtn_momo' | 'airtel_money' | 'telebirr' | 'pix' | 'mercado_pago' | 'metamask' | 'coinbase' | 'trust_wallet' | 'phantom';
 export type EmploymentType = 
   | 'mobile_money_agent' 
   | 'agritech_farmer' 
   | 'remittance_receiver' 
   | 'fintech_employee'
+  | 'gig_worker'
   | 'software_engineer' 
   | 'teacher' 
   | 'nurse' 
-  | 'freelancer';
+  | 'freelancer'
+  | 'delivery_driver'
+  | 'ecommerce_seller'
+  | 'content_creator';
 
 export interface BorrowerProfile {
   borrower_id: string;
@@ -22,6 +26,7 @@ export interface BorrowerProfile {
   last_name: string;
   country: string;
   region: Region;
+  country_name: string;
   age: number;
   
   // Financial
@@ -70,6 +75,8 @@ export interface Portfolio {
   tranches: PortfolioTranche[];
   credit_proof_ids?: number[];
   mrenclave?: string;
+  impact_score?: number; // Score from 0-100 representing social/economic impact
+  use_case_category?: string; // e.g., "SME", "Education", "Agri"
 }
 
 export interface ZKProof {

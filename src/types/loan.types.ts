@@ -27,6 +27,7 @@ export interface LoanFilter {
   maxTerm: number;
   riskTiers: string[];
   collateralTypes: string[];
+  regions?: string[];
   status?: string;
 }
 

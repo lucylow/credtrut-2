@@ -6,6 +6,8 @@ import FeaturesSection from "@/components/landing/FeaturesSection";
 import HackathonSection from "@/components/landing/HackathonSection";
 import Footer from "@/components/landing/Footer";
 import FloatingParticles from "@/components/landing/FloatingParticles";
+import TechStackSection from "@/components/landing/TechStackSection";
+import CountdownTimer from "@/components/landing/CountdownTimer";
 
 const Index = () => {
   return (
@@ -14,8 +16,10 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
+        <CountdownTimer />
         <ProblemSection />
         <SolutionSection />
+        <TechStackSection />
         <FeaturesSection />
         <HackathonSection />
       </main>

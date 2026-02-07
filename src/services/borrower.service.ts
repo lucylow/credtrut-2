@@ -146,7 +146,7 @@ export async function generateTestDataset(count: number, options?: {
   
   return generateBorrowerDataset(
     count,
-    options?.regionMix || { africa: 0.6, global: 0.4 },
+    options?.regionMix || { africa: 0.5, latam: 0.2, global: 0.3 },
     options?.tierDistribution || { A: 0.25, B: 0.35, C: 0.25, D: 0.15 }
   );
 }

@@ -4,16 +4,28 @@ import type { BorrowerProfile, RiskTier, Region, EmploymentType, KycLevel } from
 // African first/last names
 const AFRICAN_FIRST_NAMES = [
   'Amara', 'Kwame', 'Fatou', 'Kofi', 'Nia', 'Jabari', 'Zuri', 'Sekou', 'Adaeze', 'Olumide',
-  'Chiamaka', 'Tendai', 'Nkechi', 'Obinna', 'Yaa', 'Mensah', 'Akinyi', 'Chidi', 'Folake', 'Emeka'
+  'Chiamaka', 'Tendai', 'Nkechi', 'Obinna', 'Yaa', 'Mensah', 'Akinyi', 'Chidi', 'Folake', 'Emeka',
+  'Abebe', 'Zenebe', 'Tadesse', 'Lulu', 'Yared', 'Saran', 'Moussa', 'Abubakar', 'Idris', 'Sade'
 ];
 const AFRICAN_LAST_NAMES = [
   'Okonkwo', 'Mensah', 'Diallo', 'Osei', 'Kamara', 'Traore', 'Adeyemi', 'Nkrumah', 'Achebe', 'Kenyatta',
-  'Mandela', 'Mbeki', 'Soyinka', 'Onyango', 'Mwangi', 'Okello', 'Banda', 'Moyo', 'Chukwu', 'Afolabi'
+  'Mandela', 'Mbeki', 'Soyinka', 'Onyango', 'Mwangi', 'Okello', 'Banda', 'Moyo', 'Chukwu', 'Afolabi',
+  'Keita', 'Gueye', 'Touré', 'Sow', 'Fall', 'Diarra', 'Koné', 'Coulibaly', 'Sidibé', 'Ballo'
+];
+
+const LATAM_FIRST_NAMES = [
+  'Santiago', 'Mateo', 'Valentina', 'Isabella', 'Sebastián', 'Mariana', 'Alejandro', 'Camila', 'Diego', 'Luciana',
+  'Felipe', 'Gabriela', 'Nicolás', 'Daniela', 'Joaquín', 'Martina', 'Andrés', 'Sofía', 'Enzo', 'Beatriz'
+];
+const LATAM_LAST_NAMES = [
+  'González', 'Rodríguez', 'Gómez', 'Fernández', 'López', 'Díaz', 'Martínez', 'Pérez', 'García', 'Sánchez',
+  'Romero', 'Álvarez', 'Torres', 'Ruiz', 'Ramírez', 'Flores', 'Acosta', 'Benítez', 'Medina', 'Suárez'
 ];
 
 const GLOBAL_FIRST_NAMES = [
   'James', 'Maria', 'Jean', 'Carlos', 'Emma', 'Lucas', 'Sophie', 'Ahmed', 'Fatima', 'Oliver',
-  'Isabella', 'Noah', 'Mia', 'Ethan', 'Ava', 'Liam', 'Charlotte', 'Benjamin', 'Amelia', 'William'
+  'Isabella', 'Noah', 'Mia', 'Ethan', 'Ava', 'Liam', 'Charlotte', 'Benjamin', 'Amelia', 'William',
+  'Yuki', 'Hiroshi', 'Chen', 'Wei', 'Arjun', 'Priya', 'Svetlana', 'Dmitry', 'Hans', 'Greta'
 ];
 const GLOBAL_LAST_NAMES = [
   'Smith', 'Garcia', 'Martin', 'Rodriguez', 'Johnson', 'Dubois', 'Hassan', 'Silva', 'Brown', 'Williams',
@@ -22,18 +34,38 @@ const GLOBAL_LAST_NAMES = [
 
 const REGION_CONFIG = {
   africa: {
-    countries: ['KE', 'NG', 'GH', 'ZA', 'EG', 'MA'],
+    countries: ['KE', 'NG', 'GH', 'ZA', 'EG', 'MA', 'ET', 'SN'],
+    countryNames: { 
+      KE: 'Kenya', NG: 'Nigeria', GH: 'Ghana', ZA: 'South Africa', 
+      EG: 'Egypt', MA: 'Morocco', ET: 'Ethiopia', SN: 'Senegal' 
+    } as Record<string, string>,
     incomeRange: [8000, 85000] as [number, number],
-    employmentTypes: ['mobile_money_agent', 'agritech_farmer', 'remittance_receiver', 'fintech_employee'] as EmploymentType[],
-    walletProviders: ['m-pesa', 'mtn_momo', 'airtel_money'] as const,
+    employmentTypes: ['mobile_money_agent', 'agritech_farmer', 'remittance_receiver', 'fintech_employee', 'gig_worker'] as EmploymentType[],
+    walletProviders: ['m-pesa', 'mtn_momo', 'airtel_money', 'telebirr'] as const,
     firstNames: AFRICAN_FIRST_NAMES,
     lastNames: AFRICAN_LAST_NAMES,
   },
+  latam: {
+    countries: ['BR', 'MX', 'AR', 'CO', 'CL', 'PE'],
+    countryNames: { 
+      BR: 'Brazil', MX: 'Mexico', AR: 'Argentina', 
+      CO: 'Colombia', CL: 'Chile', PE: 'Peru' 
+    } as Record<string, string>,
+    incomeRange: [12000, 110000] as [number, number],
+    employmentTypes: ['software_engineer', 'delivery_driver', 'ecommerce_seller', 'freelancer'] as EmploymentType[],
+    walletProviders: ['pix', 'mercado_pago', 'metamask'] as const,
+    firstNames: LATAM_FIRST_NAMES,
+    lastNames: LATAM_LAST_NAMES,
+  },
   global: {
-    countries: ['US', 'BR', 'FR', 'ES', 'EG'],
+    countries: ['US', 'BR', 'FR', 'ES', 'EG', 'DE', 'JP', 'IN', 'CN', 'UK'],
+    countryNames: { 
+      US: 'United States', BR: 'Brazil', FR: 'France', ES: 'Spain', 
+      EG: 'Egypt', DE: 'Germany', JP: 'Japan', IN: 'India', CN: 'China', UK: 'United Kingdom' 
+    } as Record<string, string>,
     incomeRange: [25000, 150000] as [number, number],
-    employmentTypes: ['software_engineer', 'teacher', 'nurse', 'freelancer'] as EmploymentType[],
-    walletProviders: ['metamask', 'coinbase', 'trust_wallet'] as const,
+    employmentTypes: ['software_engineer', 'teacher', 'nurse', 'freelancer', 'content_creator'] as EmploymentType[],
+    walletProviders: ['metamask', 'coinbase', 'trust_wallet', 'phantom'] as const,
     firstNames: GLOBAL_FIRST_NAMES,
     lastNames: GLOBAL_LAST_NAMES,
   }
@@ -114,10 +146,11 @@ export function generateBorrower(
   region?: Region,
   riskTier?: RiskTier
 ): BorrowerProfile {
-  const actualRegion = region || randomChoice(['africa', 'global'] as const);
+  const actualRegion = region || weightedChoice(['africa', 'latam', 'global'] as const, [0.5, 0.2, 0.3]);
   const config = REGION_CONFIG[actualRegion];
   
   const tier = riskTier || randomChoice(['A', 'B', 'C', 'D'] as const);
+  const countryCode = randomChoice(config.countries);
   const [minDebt, maxDebt] = RISK_DEBT_RATIOS[tier];
   const debtRatio = randomFloat(minDebt, maxDebt);
   
@@ -140,7 +173,8 @@ export function generateBorrower(
     wallet_address: generateWalletAddress(actualRegion),
     first_name: randomChoice(config.firstNames),
     last_name: randomChoice(config.lastNames),
-    country: randomChoice(config.countries),
+    country: countryCode,
+    country_name: config.countryNames[countryCode] || countryCode,
     region: actualRegion,
     age: randomInt(22, 55),
     
@@ -170,7 +204,7 @@ export function generateBorrower(
 
 export function generateBorrowerDataset(
   count: number,
-  regionMix: Record<Region, number> = { africa: 0.6, global: 0.4 },
+  regionMix: Record<Region, number> = { africa: 0.5, latam: 0.2, global: 0.3 },
   tierDistribution: Record<RiskTier, number> = { A: 0.25, B: 0.35, C: 0.25, D: 0.15 }
 ): BorrowerProfile[] {
   const regions = Object.keys(regionMix) as Region[];

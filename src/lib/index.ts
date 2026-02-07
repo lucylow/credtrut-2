@@ -1,7 +1,7 @@
 // Centralized lib exports
 
 export { cn } from './utils';
-export { api, ApiClient, type ApiResponse } from './api';
+export { teeApi, trancheApi } from './api';
 export { 
   config, 
   isBackendConfigured, 

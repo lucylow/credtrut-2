@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,6 +38,19 @@
     /* Custom tokens */
     --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Tranche colors */
+    --tranche-senior: 217 91% 60%;
+    --tranche-junior: 38 92% 50%;
+    --tranche-equity: 0 84% 60%;
+    
+    /* HSM status */
+    --hsm-healthy: 160 84% 39%;
+    --hsm-warning: 38 92% 50%;
+    --hsm-critical: 0 84% 60%;
     
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 8%) 0%, hsl(262 30% 12%) 50%, hsl(222 47% 5%) 100%);
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(262 83% 58%) 100%);
@@ -88,6 +100,19 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Tranche colors */
+    --tranche-senior: 217 91% 60%;
+    --tranche-junior: 38 92% 50%;
+    --tranche-equity: 0 84% 60%;
+    
+    /* HSM status */
+    --hsm-healthy: 160 84% 39%;
+    --hsm-warning: 38 92% 50%;
+    --hsm-critical: 0 84% 60%;
     
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -187,19 +212,6 @@ html.theme-transitioning *::after {
 @layer components {
   .glass-card {
     @apply bg-card/50 backdrop-blur-xl border border-border rounded-2xl;
-    box-shadow: 
-      0 4px 24px -4px hsl(var(--primary) / 0.05),
-      0 0 0 1px hsl(var(--border) / 0.5),
-      inset 0 1px 1px hsl(0 0% 100% / 0.03);
-  }
-  
-  .glass-card-elevated {
-    @apply bg-card/60 backdrop-blur-xl border border-border/80 rounded-2xl;
-    box-shadow: 
-      0 8px 32px -8px hsl(var(--primary) / 0.1),
-      0 4px 16px -4px hsl(0 0% 0% / 0.15),
-      0 0 0 1px hsl(var(--border) / 0.5),
-      inset 0 1px 2px hsl(0 0% 100% / 0.05);
   }
   
   .glass-nav {
@@ -214,64 +226,6 @@ html.theme-transitioning *::after {
   .glow-orb {
     @apply absolute rounded-full blur-3xl opacity-30;
     animation: pulse-glow 4s ease-in-out infinite alternate;
-  }
-  
-  /* Interactive card with hover state */
-  .interactive-card {
-    @apply glass-card transition-all duration-300 cursor-pointer;
-  }
-  
-  .interactive-card:hover {
-    @apply border-primary/30;
-    transform: translateY(-2px);
-    box-shadow: 
-      0 12px 40px -8px hsl(var(--primary) / 0.15),
-      0 8px 24px -8px hsl(0 0% 0% / 0.2),
-      0 0 0 1px hsl(var(--primary) / 0.2);
-  }
-  
-  /* Status indicators */
-  .status-dot {
-    @apply relative w-2 h-2 rounded-full;
-  }
-  
-  .status-dot::after {
-    content: '';
-    @apply absolute inset-0 rounded-full animate-ping opacity-75;
-    background: inherit;
-  }
-  
-  .status-dot-primary { @apply bg-primary; }
-  .status-dot-success { @apply bg-emerald-500; }
-  .status-dot-warning { @apply bg-amber-500; }
-  .status-dot-danger { @apply bg-red-500; }
-  
-  /* Badge styles */
-  .badge-glow {
-    @apply relative;
-    box-shadow: 0 0 12px -2px currentColor;
-  }
-  
-  /* Gradient borders */
-  .gradient-border {
-    position: relative;
-    background: hsl(var(--card));
-    border-radius: 1rem;
-  }
-  
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
   }
 }
 
