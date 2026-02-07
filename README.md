@@ -1,17 +1,5 @@
-# CredTrust 12 - Confidential AI Credit Scoring Platform 🚀🔒
+# CredTrust - Confidential AI Credit Scoring Platform 🚀🔒
 
-<div align="center">
-  <img src="https://github.com/lucylow/credtrut-2/assets/12345678/credtrust-hero.png" alt="CredTrust Hero" width="800"/>
-  <br><br>
-  
-[
-[
-[
-[
-[
-[
-
-</div>
 
 # Table of Contents
 - [🎯 Overview](#-overview)
