@@ -72,7 +72,7 @@ const HeroSection = () => {
             >
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               <span className="text-sm font-medium text-muted-foreground">
-                Hack4Privacy Grand Prize Winner
+                Hack4Privacy
               </span>
             </motion.div>
 
