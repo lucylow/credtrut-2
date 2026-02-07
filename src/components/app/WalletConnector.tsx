@@ -40,7 +40,14 @@ export default function WalletConnector() {
         setTransactions(JSON.parse(stored));
       } else {
         setTransactions([
-          { hash: '0x1a2b...3c4d', type: 'mint', desc: 'Welcome to CredTrust', time: 'Just now', status: 'confirmed' }
+          { hash: '0x9f3a...b7c1', type: 'mint', desc: 'Credit Score NFT #CT-1284 Minted', time: '2m ago', status: 'confirmed' },
+          { hash: '0x4d2e...a8f3', type: 'approve', desc: 'TDX Enclave Task Authorized', time: '5m ago', status: 'confirmed' },
+          { hash: '0x7b1c...d4e9', type: 'send', desc: 'Groth16 Proof Submitted', time: '12m ago', status: 'confirmed' },
+          { hash: '0x2a8f...c6b2', type: 'receive', desc: 'Loan Pool Yield +0.045 ETH', time: '1h ago', status: 'confirmed' },
+          { hash: '0xe5d1...f2a7', type: 'send', desc: 'Tranche A Liquidity Deposit', time: '3h ago', status: 'confirmed' },
+          { hash: '0x8c4b...91d6', type: 'mint', desc: 'Selective Disclosure Token', time: '6h ago', status: 'confirmed' },
+          { hash: '0x3f7e...b5c0', type: 'approve', desc: 'DataProtector Grant Access', time: '1d ago', status: 'confirmed' },
+          { hash: '0x6a9d...e3f8', type: 'receive', desc: 'Staking Reward +0.12 RLC', time: '1d ago', status: 'confirmed' },
         ]);
       }
     }
@@ -121,7 +128,7 @@ export default function WalletConnector() {
                     {tx.status === 'confirmed' ? (
                       <CheckCircle className="h-3 w-3 text-success" />
                     ) : (
-                      <Clock className="h-3 w-3 text-amber-500 animate-pulse" />
+                      <Clock className="h-3 w-3 text-warning animate-pulse" />
                     )}
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-0.5">{tx.time}</p>
@@ -147,7 +154,7 @@ export default function WalletConnector() {
             <Button
               onClick={handleSwitchNetwork}
               size="sm"
-              className="gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0"
+              className="gap-2 bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 text-destructive-foreground border-0"
             >
               <AlertTriangle className="h-4 w-4" />
               <span className="hidden sm:inline">Switch to Arbitrum</span>

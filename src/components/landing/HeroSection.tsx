@@ -1,4 +1,4 @@
-import { PlayCircle, Github, Lock, Shield, Zap, Award, Cpu, ArrowRight } from "lucide-react";
+import { Github, Lock, Shield, Zap, Award, Cpu, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useEffect, useState, useMemo } from "react";
@@ -118,10 +118,10 @@ const HeroSection = () => {
                 </Link>
               </Button>
               <Button variant="heroOutline" size="xl" asChild>
-                <a href="#demo">
-                  <PlayCircle className="h-5 w-5" />
-                  Watch Demo
-                </a>
+                <Link to="/app/submit">
+                  <Lock className="h-5 w-5" />
+                  Score My Wallet
+                </Link>
               </Button>
             </motion.div>
 
